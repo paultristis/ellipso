@@ -11,11 +11,11 @@ export type SourceKind = "image" | "pdf";
 export type Draft = {
   fileName: string;
   dataUrl: string;
+  originalDataUrl: string;
   img: HTMLImageElement;
+  originalImg: HTMLImageElement;
   pxW: number;
   pxH: number;
-  originalDataUrl: string;
-  originalImg: HTMLImageElement;
   originalPxW: number;
   originalPxH: number;
   cropPx: CropRectPx | null;
@@ -43,15 +43,19 @@ export type Draft = {
 
 export type Asset = {
   id: string;
-  fileName: string;
-  dataUrl: string;
   workspace_id: string;
   owner_profile_id: string;
+
+  fileName: string;
+  filePath: string;
+  originalFilePath: string;  
+  
   img: HTMLImageElement;
+  originalImg: HTMLImageElement;
+
   pxW: number;
   pxH: number;
-  originalDataUrl: string;
-  originalImg: HTMLImageElement;
+ 
   originalPxW: number;
   originalPxH: number;
   cropPx: CropRectPx | null;

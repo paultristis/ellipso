@@ -15,6 +15,19 @@ export async function loadFileAsImage(file: File): Promise<{ img: HTMLImageEleme
   });
 }
 
+export async function loadImageFromUrl(url: string): Promise<HTMLImageElement> {
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+
+  await new Promise<void>((resolve, reject) => {
+    img.onload = () => resolve();
+    img.onerror = () => reject(new Error(`Failed to load image: ${url}`));
+    img.src = url;
+  });
+
+  return img;
+}
+
 export async function loadPdfFirstPageAsImage(
   file: File,
   opts?: { dpi?: number; pageNumber?: number }

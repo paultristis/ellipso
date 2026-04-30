@@ -88,7 +88,7 @@ export function useModelspaceState({
     const seededName  = (asset.meta?.name ?? "").trim().length > 0
     ? asset.meta!.name : stripExt(asset.fileName ?? "");
     const oImg = asset.originalImg ?? asset.img;
-    const oDataUrl = asset.originalDataUrl ?? asset.dataUrl;
+    const oDataUrl = asset.originalFilePath ?? asset.filePath;
     const oPxW = asset.originalPxW ?? asset.pxW;
     const oPxH = asset.originalPxH ?? asset.pxH;
     const source: "image" | "pdf" = (asset.source as any) ?? "image";
@@ -98,7 +98,7 @@ export function useModelspaceState({
 
     setDraft({
       fileName: asset.fileName,
-      dataUrl: asset.dataUrl,
+      dataUrl: asset.filePath,
       img: asset.img,
       pxW: asset.pxW,
       pxH: asset.pxH,
@@ -349,28 +349,33 @@ export function useModelspaceState({
     if (!draft) return;
 
     const saved = await savePlacedAsset({
-       draft,
-    profileId,
-    workspaceId,
-    x: worldX,
-    y: worldY,
+      draft,
+      profileId,
+      workspaceId,
+      x: worldX,
+      y: worldY,
     });
 
     const newAsset: Asset = {
-      id: uid(),
-      fileName: draft.fileName,
-      dataUrl: draft.dataUrl,
+      id: saved.row.id,
       workspace_id: workspaceId,
       owner_profile_id: profileId,
+
+      fileName: draft.fileName,
+      filePath: saved.filePath,
+      originalFilePath: saved.originalFilePath,
+
       img: draft.img,
+      originalImg: draft.originalImg,
+
       pxW: draft.pxW,
       pxH: draft.pxH,
-      originalDataUrl: draft.originalDataUrl,
-      originalImg: draft.originalImg,
       originalPxW: draft.originalPxW,
       originalPxH: draft.originalPxH,
+
       cropPx: draft.cropPx,
       source: draft.source,
+
       inPerPx: draft.inPerPx,
       baseInPerPx: draft.baseInPerPx,
       scaleRaw: draft.scaleRaw,
@@ -379,7 +384,13 @@ export function useModelspaceState({
       x: worldX,
       y: worldY,
       rotationDeg: draft.rotationDeg,
-      meta: { ...draft.meta,
+
+      bgRemoved: draft.bgRemoved,
+      tintColor: draft.tintColor,
+
+      meta: { 
+        name: draft.meta?.name,
+        desc: draft.meta?.desc,
         uploadedBy: draft.meta?.uploadedBy?.trim() || "Unknown",
         date: draft.meta?.date?.trim() || new Date().toLocaleDateString(),
         },
